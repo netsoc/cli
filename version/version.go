@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	// Version is the application version
+	// Version is the application version (set in release builds by the command line)
 	Version = ""
 	// IAM is the version of the IAM API client
 	IAM = ""
@@ -18,7 +18,9 @@ func init() {
 		log.Fatalf("Failed to read build info")
 	}
 
-	Version = info.Main.Version
+	if Version == "" {
+		Version = info.Main.Version
+	}
 
 	for _, mod := range info.Deps {
 		switch mod.Path {
