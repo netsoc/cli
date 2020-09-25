@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"syscall"
+	"os"
 
 	"github.com/dgrijalva/jwt-go/v4"
 	iam "github.com/netsoc/iam/client"
@@ -44,7 +44,7 @@ func APIError(err error) error {
 // ReadPassword reads a password from stdin
 func ReadPassword(confirm bool) (string, error) {
 	fmt.Print("Enter password: ")
-	p, err := terminal.ReadPassword(syscall.Stdin)
+	p, err := terminal.ReadPassword(int(os.Stdin.Fd()))
 	if err != nil {
 		return "", fmt.Errorf("read failed: %w", err)
 	}
@@ -52,7 +52,7 @@ func ReadPassword(confirm bool) (string, error) {
 
 	if confirm {
 		fmt.Print("Again: ")
-		p2, err := terminal.ReadPassword(syscall.Stdin)
+		p2, err := terminal.ReadPassword(int(os.Stdin.Fd()))
 		if err != nil {
 			return "", fmt.Errorf("read failed: %w", err)
 		}
