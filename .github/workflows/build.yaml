@@ -11,8 +11,6 @@ jobs:
 
     env:
       GO_VERSION: 1.15.x
-      CR_PAT_USER: devplayer0
-      REPO: ghcr.io/netsoc/iamd
 
     steps:
       - name: Setup Go
@@ -27,4 +25,5 @@ jobs:
 
       - name: Upload binary
         uses: actions/upload-artifact@v2
-        path: bin/netsoc
+        with:
+          path: bin/netsoc
