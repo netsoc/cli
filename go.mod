@@ -3,6 +3,7 @@ module github.com/netsoc/cli
 go 1.15
 
 require (
+	github.com/MakeNowJust/heredoc v1.0.0
 	github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1
 	github.com/githubnemo/CompileDaemon v1.2.1
 	github.com/mitchellh/go-homedir v1.1.0

@@ -30,8 +30,9 @@ func NewCmdRoot() *cobra.Command {
 	cmd.PersistentFlags().Bool("debug", false, "print debug messages")
 	f := util.NewDefaultCmdFactory(cmd.PersistentFlags().Lookup("config"), cmd.PersistentFlags().Lookup("debug"))
 
-	cmd.AddCommand(NewCmdVersion(f))
 	cmd.AddCommand(account.NewCmdAccount(f))
+	cmd.AddCommand(NewCmdCompletion())
+	cmd.AddCommand(NewCmdVersion(f))
 
 	return cmd
 }
