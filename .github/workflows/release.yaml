@@ -1,0 +1,43 @@
+on:
+  push:
+    tags:
+      - 'v*'
+
+name: Release
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - id: vars
+        name: Generate release vars
+        run: |
+          echo "::set-output name=version::"$(echo "${{ github.ref }}" | sed -r 's|refs/tags/v(.+)|\1|')""
+
+          echo "Changelog: " > release.md
+          git log --pretty=format:" - %s" "$(git describe --tags --abbrev=0 ${{ github.event.ref }}^)"..${{ github.event.ref }} >> release.md
+
+      - name: Cross compile with xgo
+        uses: crazy-max/ghaction-xgo@v1
+        with:
+          go_version: 1.15.x
+          pkg: cmd/netsoc
+          dest: bin
+          ldflags: '-X github.com/netsoc/cli/version.Version=v${{ steps.vars.outputs.version }}'
+
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+        with:
+          tag_name: ${{ github.ref }}
+          name: Release ${{ steps.vars.outputs.version }}
+          body_path: release.md
+          files: bin/github.com/${{ github.repository }}/*
