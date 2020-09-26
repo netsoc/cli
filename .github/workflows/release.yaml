@@ -40,4 +40,4 @@ jobs:
           tag_name: ${{ github.ref }}
           name: Release ${{ steps.vars.outputs.version }}
           body_path: release.md
-          files: bin/github.com/${{ github.repository }}/*
+          files: bin/github.com/netsoc/*
