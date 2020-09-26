@@ -33,11 +33,17 @@ jobs:
 
       - name: Create Release
         id: create_release
-        uses: softprops/action-gh-release@v1
+        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
         with:
           tag_name: ${{ github.ref }}
-          name: Release ${{ steps.vars.outputs.version }}
+          release_name: Release ${{ steps.vars.outputs.version }}
           body_path: release.md
-          files: bin/github.com/netsoc/*
+
+      - name: Upload binaries to release
+        uses: AButler/upload-release-assets@v2.0
+        with:
+          files: 'bin/github.com/netsoc/*'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          release-tag: v${{ steps.vars.outputs.version }}
