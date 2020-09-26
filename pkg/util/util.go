@@ -1,12 +1,15 @@
 package util
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
+	"io"
 	"log"
 	"os"
 
 	"github.com/dgrijalva/jwt-go/v4"
+	"github.com/mattn/go-isatty"
 	iam "github.com/netsoc/iam/client"
 	"golang.org/x/crypto/ssh/terminal"
 )
@@ -43,6 +46,18 @@ func APIError(err error) error {
 
 // ReadPassword reads a password from stdin
 func ReadPassword(confirm bool) (string, error) {
+	if !isatty.IsTerminal(os.Stdin.Fd()) {
+		r := bufio.NewReader(os.Stdin)
+
+		p := make([]byte, 1024)
+		n, err := r.Read(p)
+		if err != nil && !errors.Is(err, io.EOF) {
+			return "", fmt.Errorf("read failed: %w", err)
+		}
+
+		return string(p[:n]), nil
+	}
+
 	fmt.Print("Enter password: ")
 	p, err := terminal.ReadPassword(int(os.Stdin.Fd()))
 	if err != nil {
