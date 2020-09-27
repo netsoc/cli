@@ -1,6 +1,20 @@
 package config
 
-import "github.com/spf13/viper"
+import (
+	"time"
+
+	"github.com/mitchellh/mapstructure"
+	"github.com/spf13/viper"
+)
+
+// DecoderOptions enables necessary mapstructure decode hook functions
+func DecoderOptions(config *mapstructure.DecoderConfig) {
+	config.ErrorUnused = true
+	config.DecodeHook = mapstructure.ComposeDecodeHookFunc(
+		config.DecodeHook,
+		mapstructure.StringToTimeHookFunc(time.RFC3339Nano),
+	)
+}
 
 // SetDefaults sets config defaults
 func SetDefaults() {
@@ -20,4 +34,6 @@ type Config struct {
 	URLs struct {
 		IAM string
 	}
+
+	LastUpdateCheck time.Time `mapstructure:"last_update_check"`
 }

@@ -2,6 +2,7 @@ package util
 
 import (
 	"bufio"
+	"context"
 	"encoding/json"
 	"errors"
 	"fmt"
@@ -12,9 +13,12 @@ import (
 	"text/template"
 	"time"
 
+	"github.com/Masterminds/semver/v3"
 	"github.com/dgrijalva/jwt-go/v4"
+	"github.com/google/go-github/v32/github"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/mattn/go-isatty"
+	"github.com/netsoc/cli/version"
 	iam "github.com/netsoc/iam/client"
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/ssh/terminal"
@@ -29,8 +33,12 @@ var (
 // IsDebug determines if debugging is enabled
 var IsDebug bool
 
-// TableDateFormat is the date format used for table output
-const TableDateFormat = "2006-01-02 15:04:05"
+const (
+	// TableDateFormat is the date format used for table output
+	TableDateFormat = "2006-01-02 15:04:05"
+	// UpdateRepo is the repository to check for updates on
+	UpdateRepo = "netsoc/cli"
+)
 
 // Debugf prints log messages only if debugging is enabled
 func Debugf(format string, v ...interface{}) {
@@ -190,4 +198,30 @@ func PrintUsers(users []iam.User, outputType string, single bool) error {
 // AddOptFormat adds the output format option to a command
 func AddOptFormat(cmd *cobra.Command, p *string) {
 	cmd.Flags().StringVarP(p, "output", "o", "table", "output format `table|wide|yaml|json|template=<Go template>`")
+}
+
+// CheckUpdate checks to see if a new version is available
+func CheckUpdate() (string, error) {
+	current, err := semver.NewVersion(version.Version)
+	if err != nil {
+		// If the binary's version doesn't parse then it's probably a dev build
+		return "", nil
+	}
+
+	client := github.NewClient(nil)
+	release, _, err := client.Repositories.GetLatestRelease(context.Background(), "netsoc", "cli")
+	if err != nil {
+		return "", fmt.Errorf("failed to query GitHub API for latest release: %w", err)
+	}
+
+	new, err := semver.NewVersion(*release.TagName)
+	if err != nil {
+		return "", fmt.Errorf("failed to parse latest release tag: %w", err)
+	}
+
+	if new.GreaterThan(current) {
+		return release.GetHTMLURL(), nil
+	}
+
+	return "", nil
 }

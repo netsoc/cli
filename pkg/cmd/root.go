@@ -1,10 +1,14 @@
 package cmd
 
 import (
+	"fmt"
+	"log"
 	"path"
+	"time"
 
 	homedir "github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 
 	"github.com/netsoc/cli/pkg/cmd/account"
 	"github.com/netsoc/cli/pkg/util"
@@ -33,6 +37,34 @@ func NewCmdRoot() *cobra.Command {
 	cmd.AddCommand(account.NewCmdAccount(f))
 	cmd.AddCommand(NewCmdCompletion())
 	cmd.AddCommand(NewCmdVersion(f))
+
+	cmd.PersistentPostRunE = func(cmd *cobra.Command, args []string) error {
+		c, err := f.Config()
+		if err != nil {
+			return err
+		}
+
+		now := time.Now()
+		if now.Sub(c.LastUpdateCheck).Hours() < 24 {
+			return nil
+		}
+
+		newURL, err := util.CheckUpdate()
+		if err != nil {
+			return fmt.Errorf("Failed to check for updates: %v", err)
+		}
+
+		if newURL != "" {
+			log.Printf("A new version of the Netsoc CLI is available at %v", newURL)
+		}
+
+		viper.Set("last_update_check", now)
+		if err := viper.WriteConfig(); err != nil {
+			return fmt.Errorf("failed to write config: %w", err)
+		}
+
+		return nil
+	}
 
 	return cmd
 }

@@ -60,7 +60,7 @@ func NewDefaultCmdFactory(configFlag, debugFlag *pflag.Flag) *CmdFactory {
 			Debugf("Loaded config file: %v", viper.ConfigFileUsed())
 		}
 
-		if err := viper.Unmarshal(&cachedConfig); err != nil {
+		if err := viper.Unmarshal(&cachedConfig, config.DecoderOptions); err != nil {
 			return nil, fmt.Errorf("failed to parse configuration: %w", err)
 		}
 
