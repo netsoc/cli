@@ -36,6 +36,8 @@ var IsDebug bool
 const (
 	// TableDateFormat is the date format used for table output
 	TableDateFormat = "2006-01-02 15:04:05"
+	// DateOnlyFormat is a date format only containing the date
+	DateOnlyFormat = "2006-01-02"
 	// UpdateRepo is the repository to check for updates on
 	UpdateRepo = "netsoc/cli"
 )

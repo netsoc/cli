@@ -5,10 +5,11 @@ import (
 	"errors"
 
 	"github.com/MakeNowJust/heredoc"
+	"github.com/spf13/cobra"
+
 	"github.com/netsoc/cli/pkg/config"
 	"github.com/netsoc/cli/pkg/util"
 	iam "github.com/netsoc/iam/client"
-	"github.com/spf13/cobra"
 )
 
 type infoOptions struct {

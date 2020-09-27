@@ -14,6 +14,9 @@ func NewCmdAccount(f *util.CmdFactory) *cobra.Command {
 		Short:   "Manage Netsoc account",
 	}
 
-	cmd.AddCommand(NewCmdLogin(f), NewCmdLogout(f), NewCmdInfo(f), NewCmdList(f))
+	cmd.AddCommand(NewCmdLogin(f), NewCmdLogout(f), NewCmdInfo(f), NewCmdSet(f))
+	// Admin-only commands
+	cmd.AddCommand(NewCmdList(f))
+
 	return cmd
 }

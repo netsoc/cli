@@ -6,11 +6,12 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+
 	"github.com/netsoc/cli/pkg/config"
 	"github.com/netsoc/cli/pkg/util"
 	iam "github.com/netsoc/iam/client"
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
 )
 
 type loginOptions struct {
