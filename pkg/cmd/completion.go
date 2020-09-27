@@ -15,7 +15,7 @@ func NewCmdCompletion() *cobra.Command {
 	cmd := &cobra.Command{
 		Use:   "completion",
 		Short: "Generate shell completion scripts",
-		Long: fmt.Sprintf(heredoc.Doc(`
+		Long: heredoc.Docf(`
 			Generate shell completion scripts for Netsoc CLI commands.
 
 			The output of this command will be a shell script and is meant to be saved to a
@@ -26,7 +26,7 @@ func NewCmdCompletion() *cobra.Command {
 
 			When installing Netsoc CLI through a package manager, however, it's possible that
 			no additional shell configuration is necessary to gain completion support.
-		`), os.Args[0]),
+		`, os.Args[0]),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if shellType == "" {
 				shellType = "bash"

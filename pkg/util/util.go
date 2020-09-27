@@ -2,16 +2,23 @@ package util
 
 import (
 	"bufio"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
 	"log"
 	"os"
+	"strings"
+	"text/template"
+	"time"
 
 	"github.com/dgrijalva/jwt-go/v4"
+	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/mattn/go-isatty"
 	iam "github.com/netsoc/iam/client"
+	"github.com/spf13/cobra"
 	"golang.org/x/crypto/ssh/terminal"
+	"gopkg.in/yaml.v2"
 )
 
 var (
@@ -21,6 +28,9 @@ var (
 
 // IsDebug determines if debugging is enabled
 var IsDebug bool
+
+// TableDateFormat is the date format used for table output
+const TableDateFormat = "2006-01-02 15:04:05"
 
 // Debugf prints log messages only if debugging is enabled
 func Debugf(format string, v ...interface{}) {
@@ -86,4 +96,95 @@ type UserClaims struct {
 	jwt.StandardClaims
 	IsAdmin bool `json:"is_admin"`
 	Version uint `json:"version"`
+}
+
+// PrintUsers renders a list of users (with various output options)
+func PrintUsers(users []iam.User, outputType string, single bool) error {
+	var data interface{}
+	data = users
+	if single && len(users) == 1 {
+		data = users[0]
+	}
+
+	if strings.HasPrefix(outputType, "template=") {
+		tpl, err := template.New("anonymous").Parse(strings.TrimPrefix(outputType, "template="))
+		if err != nil {
+			return fmt.Errorf("failed to parse template: %w", err)
+		}
+
+		if err := tpl.Execute(os.Stdout, data); err != nil {
+			return fmt.Errorf("failed to execute template: %w", err)
+		}
+
+		return nil
+	}
+
+	switch outputType {
+	case "json":
+		if err := json.NewEncoder(os.Stdout).Encode(data); err != nil {
+			return fmt.Errorf("failed to encode JSON: %w", err)
+		}
+	case "yaml":
+		if err := yaml.NewEncoder(os.Stdout).Encode(data); err != nil {
+			return fmt.Errorf("failed to encode YAML: %w", err)
+		}
+	case "table-wide", "wide":
+		t := table.NewWriter()
+		t.AppendHeader(table.Row{"ID", "Username", "Admin", "Email", "Verified", "Name", "Renewed", "Created / Updated"})
+		t.SetStyle(table.StyleRounded)
+		for _, u := range users {
+			admin := "no"
+			if u.IsAdmin {
+				admin = "yes"
+			}
+
+			verified := "no"
+			if u.Verified {
+				verified = "yes"
+			}
+
+			renewed := u.Renewed.Local().Format(TableDateFormat)
+			if u.Renewed.Before(time.Unix(0, 0)) {
+				renewed = "never"
+			}
+
+			createdUpdated := u.Meta.Created.Local().Format(TableDateFormat) + "\n" + u.Meta.Updated.Local().Format(TableDateFormat)
+
+			t.AppendRow(table.Row{
+				fmt.Sprint(u.Id),
+				u.Username,
+				admin,
+				u.Email,
+				verified,
+				u.FirstName + " " + u.LastName,
+				renewed,
+				createdUpdated,
+			})
+		}
+
+		fmt.Println(t.Render())
+	case "table":
+		t := table.NewWriter()
+		t.AppendHeader(table.Row{"ID", "Username", "Email", "Name", "Renewed"})
+		t.SetStyle(table.StyleRounded)
+		for _, u := range users {
+			renewed := u.Renewed.Local().Format(TableDateFormat)
+			if u.Renewed.Before(time.Unix(0, 0)) {
+				renewed = "never"
+			}
+
+			t.AppendRow(table.Row{fmt.Sprint(u.Id), u.Username, u.Email, u.FirstName + " " + u.LastName, renewed})
+		}
+
+		fmt.Println(t.Render())
+	default:
+		return fmt.Errorf(`unknown output format "%v"`, outputType)
+	}
+
+	return nil
+}
+
+// AddOptFormat adds the output format option to a command
+func AddOptFormat(cmd *cobra.Command, p *string) {
+	cmd.Flags().StringVarP(p, "output", "o", "table", "output format `table|wide|yaml|json|template=<Go template>`")
 }

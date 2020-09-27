@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/dgrijalva/jwt-go/v4"
@@ -32,7 +33,11 @@ func NewDefaultCmdFactory(configFlag, debugFlag *pflag.Flag) *CmdFactory {
 
 		config.SetDefaults()
 
-		viper.SetConfigFile(configFlag.Value.String())
+		configFile := os.Getenv("NETSOC_CONFIG")
+		if configFile == "" || configFlag.Changed {
+			configFile = configFlag.Value.String()
+		}
+		viper.SetConfigFile(configFile)
 
 		// Config from environment
 		viper.SetEnvPrefix("netsoc")
