@@ -101,6 +101,35 @@ func ReadPassword(confirm bool) (string, error) {
 	return string(p), nil
 }
 
+// YesNo asks a yes/no question on the command line
+func YesNo(prompt string, yesDefault bool) (bool, error) {
+	r := bufio.NewReader(os.Stdin)
+
+	yn := "y/N"
+	if yesDefault {
+		yn = "Y/n"
+	}
+	for {
+		fmt.Printf("%v [%v] ", prompt, yn)
+
+		answer, err := r.ReadString('\n')
+		if err != nil {
+			return yesDefault, fmt.Errorf("read failed: %w", err)
+		}
+
+		switch strings.ToLower(strings.TrimSpace(answer)) {
+		case "yes", "y":
+			return true, nil
+		case "no", "n":
+			return false, nil
+		case "":
+			return yesDefault, nil
+		}
+
+		fmt.Println("Please enter y/n")
+	}
+}
+
 // UserClaims represents claims in an auth JWT
 type UserClaims struct {
 	jwt.StandardClaims
