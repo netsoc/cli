@@ -132,6 +132,8 @@ func PrintUsers(users []iam.User, outputType string, single bool) error {
 		t := table.NewWriter()
 		t.AppendHeader(table.Row{"ID", "Username", "Admin", "Email", "Verified", "Name", "Renewed", "Created / Updated"})
 		t.SetStyle(table.StyleRounded)
+		t.Style().Options.SeparateRows = true
+
 		for _, u := range users {
 			admin := "no"
 			if u.IsAdmin {
@@ -167,6 +169,7 @@ func PrintUsers(users []iam.User, outputType string, single bool) error {
 		t := table.NewWriter()
 		t.AppendHeader(table.Row{"ID", "Username", "Email", "Name", "Renewed"})
 		t.SetStyle(table.StyleRounded)
+
 		for _, u := range users {
 			renewed := u.Renewed.Local().Format(TableDateFormat)
 			if u.Renewed.Before(time.Unix(0, 0)) {
