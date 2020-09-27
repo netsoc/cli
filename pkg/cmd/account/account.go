@@ -16,7 +16,7 @@ func NewCmdAccount(f *util.CmdFactory) *cobra.Command {
 
 	cmd.AddCommand(NewCmdLogin(f), NewCmdLogout(f), NewCmdInfo(f), NewCmdSet(f))
 	// Admin-only commands
-	cmd.AddCommand(NewCmdList(f))
+	cmd.AddCommand(NewCmdList(f), NewCmdIssue(f))
 
 	return cmd
 }

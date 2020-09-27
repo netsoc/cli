@@ -115,7 +115,7 @@ func setRun(opts setOptions) error {
 	ctx := context.WithValue(context.Background(), iam.ContextAccessToken, c.Token)
 
 	if _, _, err := client.UsersApi.UpdateUser(ctx, opts.User, patchUser); err != nil {
-		return err
+		return util.APIError(err)
 	}
 
 	log.Print("Updated successfully")
