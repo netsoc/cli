@@ -2,6 +2,7 @@ package account
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"log"
 
@@ -55,7 +56,8 @@ func loginRun(opts loginOptions) error {
 		ctx := context.WithValue(context.Background(), iam.ContextAccessToken, c.Token)
 		u, _, err := client.UsersApi.GetUser(ctx, "self")
 		if err != nil {
-			return fmt.Errorf("failed to get info about user: %w", util.APIError(err))
+			log.Printf("failed to get info about user: %v", util.APIError(err))
+			return errors.New("already logged in")
 		}
 
 		return fmt.Errorf(fmt.Sprintf("already logged in as %v", u.Username))
