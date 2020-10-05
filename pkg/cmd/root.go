@@ -37,7 +37,7 @@ func NewCmdRoot() *cobra.Command {
 
 	cmd.AddCommand(account.NewCmdAccount(f))
 	cmd.AddCommand(webspace.NewCmdWebspace(f))
-	cmd.AddCommand(NewCmdCompletion())
+	cmd.AddCommand(NewCmdCompletion(), NewCmdDocs())
 	cmd.AddCommand(NewCmdVersion(f))
 
 	cmd.PersistentPostRunE = func(cmd *cobra.Command, args []string) error {
