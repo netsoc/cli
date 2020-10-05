@@ -115,7 +115,6 @@ func printState(state webspaced.State, outputType string) error {
 	}
 
 	return nil
-
 }
 
 func statusRun(opts statusOptions) error {

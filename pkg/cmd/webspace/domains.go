@@ -8,7 +8,6 @@ import (
 	"os"
 	"strings"
 	"text/template"
-	"time"
 
 	"github.com/spf13/cobra"
 	"gopkg.in/yaml.v2"
@@ -18,7 +17,7 @@ import (
 	webspaced "github.com/netsoc/webspaced/client"
 )
 
-type configOptions struct {
+type domainsOptions struct {
 	Config          func() (*config.Config, error)
 	WebspacedClient func() (*webspaced.APIClient, error)
 
@@ -26,36 +25,36 @@ type configOptions struct {
 	User         string
 }
 
-// NewCmdConfig creates a new webspace config command
-func NewCmdConfig(f *util.CmdFactory) *cobra.Command {
-	opts := configOptions{
+// NewCmdDomains creates a new webspace domains command
+func NewCmdDomains(f *util.CmdFactory) *cobra.Command {
+	opts := domainsOptions{
 		Config:          f.Config,
 		WebspacedClient: f.WebspacedClient,
 	}
 	cmd := &cobra.Command{
-		Use:   "config",
-		Short: "Configure webspace",
+		Use:   "domains",
+		Short: "Configure webspace domains",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return configRun(opts)
+			return domainsRun(opts)
 		},
 	}
 
 	cmd.Flags().StringVarP(&opts.OutputFormat, "output", "o", "text", "output format `text|yaml|json|template=<Go template>`")
 	util.AddOptUser(cmd, &opts.User)
 
-	cmd.AddCommand(NewCmdConfigSet(f))
+	cmd.AddCommand(NewCmdDomainsAdd(f), NewCmdDomainsRemove(f))
 
 	return cmd
 }
 
-func printConfig(config webspaced.Config, outputType string) error {
+func printDomains(domains []string, outputType string) error {
 	if strings.HasPrefix(outputType, "template=") {
 		tpl, err := template.New("anonymous").Parse(strings.TrimPrefix(outputType, "template="))
 		if err != nil {
 			return fmt.Errorf("failed to parse template: %w", err)
 		}
 
-		if err := tpl.Execute(os.Stdout, config); err != nil {
+		if err := tpl.Execute(os.Stdout, domains); err != nil {
 			return fmt.Errorf("failed to execute template: %w", err)
 		}
 
@@ -64,25 +63,19 @@ func printConfig(config webspaced.Config, outputType string) error {
 
 	switch outputType {
 	case "json":
-		if err := json.NewEncoder(os.Stdout).Encode(config); err != nil {
+		if err := json.NewEncoder(os.Stdout).Encode(domains); err != nil {
 			return fmt.Errorf("failed to encode JSON: %w", err)
 		}
 	case "yaml":
-		if err := yaml.NewEncoder(os.Stdout).Encode(config); err != nil {
+		if err := yaml.NewEncoder(os.Stdout).Encode(domains); err != nil {
 			return fmt.Errorf("failed to encode YAML: %w", err)
 		}
 	case "text":
-		fmt.Println("Webspace configuration:")
-		fmt.Printf("Startup delay: %v\n", time.Duration(config.StartupDelay*1000*1000*1000))
-
-		t := "HTTP"
-		e := "disabled"
-		if config.SniPassthrough {
-			t = "HTTPS"
-			e = "enabled"
+		// There will always be at least the default domain
+		fmt.Println("Webspace domains:")
+		for _, d := range domains {
+			fmt.Printf(" - %v\n", d)
 		}
-		fmt.Printf("%v port: %v\n", t, config.HttpPort)
-		fmt.Printf("SNI passthrough is %v\n", e)
 	default:
 		return fmt.Errorf(`unknown output format "%v"`, outputType)
 	}
@@ -90,7 +83,7 @@ func printConfig(config webspaced.Config, outputType string) error {
 	return nil
 }
 
-func configRun(opts configOptions) error {
+func domainsRun(opts domainsOptions) error {
 	c, err := opts.Config()
 	if err != nil {
 		return err
@@ -106,10 +99,10 @@ func configRun(opts configOptions) error {
 	}
 	ctx := context.WithValue(context.Background(), webspaced.ContextAccessToken, c.Token)
 
-	config, _, err := client.ConfigApi.GetConfig(ctx, opts.User)
+	domains, _, err := client.DomainsApi.GetDomains(ctx, opts.User)
 	if err != nil {
 		return util.APIError(err)
 	}
 
-	return printConfig(config, opts.OutputFormat)
+	return printDomains(domains, opts.OutputFormat)
 }

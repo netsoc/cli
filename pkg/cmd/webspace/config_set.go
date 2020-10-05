@@ -40,10 +40,9 @@ func NewCmdConfigSet(f *util.CmdFactory) *cobra.Command {
 	settable.AppendItems([]interface{}{"startupDelay", "httpPort", "sniPassthrough"})
 
 	cmd := &cobra.Command{
-		Use:     "set <property> <value>",
-		Aliases: []string{"get"},
-		Short:   "Set config option",
-		Args:    cobra.ExactArgs(2),
+		Use:   "set <property> <value>",
+		Short: "Set config option",
+		Args:  cobra.ExactArgs(2),
 		Long: heredoc.Docf(`
 			Set config option.
 
