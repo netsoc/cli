@@ -274,6 +274,10 @@ func CheckUpdate() (string, error) {
 
 // SimpleProgress renders a simple progress
 func SimpleProgress(message string, eta time.Duration) (func(), progress.Writer, *progress.Tracker) {
+	if !isatty.IsTerminal(os.Stdin.Fd()) {
+		return func() {}, progress.NewWriter(), &progress.Tracker{}
+	}
+
 	w := progress.NewWriter()
 	w.SetAutoStop(true)
 	w.ShowPercentage(false)
