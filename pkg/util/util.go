@@ -74,9 +74,14 @@ func APIError(err error) error {
 	return err
 }
 
+// IsInteractive returns true if the CLI is being run interactively
+func IsInteractive() bool {
+	return isatty.IsTerminal(os.Stdin.Fd())
+}
+
 // ReadPassword reads a password from stdin
 func ReadPassword(confirm bool) (string, error) {
-	if !isatty.IsTerminal(os.Stdin.Fd()) {
+	if !IsInteractive() {
 		r := bufio.NewReader(os.Stdin)
 
 		p := make([]byte, 1024)
@@ -274,7 +279,7 @@ func CheckUpdate() (string, error) {
 
 // SimpleProgress renders a simple progress
 func SimpleProgress(message string, eta time.Duration) (func(), progress.Writer, *progress.Tracker) {
-	if !isatty.IsTerminal(os.Stdin.Fd()) {
+	if !IsInteractive() {
 		return func() {}, progress.NewWriter(), &progress.Tracker{}
 	}
 
