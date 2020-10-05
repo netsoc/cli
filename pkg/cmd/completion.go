@@ -10,10 +10,8 @@ import (
 
 // NewCmdCompletion creates a new completion command
 func NewCmdCompletion() *cobra.Command {
-	var shellType string
-
 	cmd := &cobra.Command{
-		Use:   "completion",
+		Use:   "completion <bash|zsh|fish|powershell>",
 		Short: "Generate shell completion scripts",
 		Long: heredoc.Docf(`
 			Generate shell completion scripts for Netsoc CLI commands.
@@ -22,16 +20,14 @@ func NewCmdCompletion() *cobra.Command {
 			file or immediately evaluated by an interactive shell.
 
 			For example, for bash you could add this to your '~/.bash_profile':
-				eval "$(%v completion -s bash)"
+				eval "$(%v completion bash)"
 
 			When installing Netsoc CLI through a package manager, however, it's possible that
 			no additional shell configuration is necessary to gain completion support.
 		`, os.Args[0]),
+		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if shellType == "" {
-				shellType = "bash"
-			}
-
+			shellType := args[0]
 			rootCmd := cmd.Parent()
 
 			switch shellType {
@@ -48,8 +44,6 @@ func NewCmdCompletion() *cobra.Command {
 			}
 		},
 	}
-
-	cmd.Flags().StringVarP(&shellType, "shell", "s", "", "Shell type: {bash|zsh|fish|powershell}")
 
 	return cmd
 }
