@@ -236,6 +236,11 @@ func PrintUsers(users []iam.User, outputType string, single bool) error {
 	return nil
 }
 
+// AddOptUser adds the user option to a command
+func AddOptUser(cmd *cobra.Command, p *string) {
+	cmd.Flags().StringVarP(p, "user", "u", "self", "(admin only) user to perform action as")
+}
+
 // AddOptFormat adds the output format option to a command
 func AddOptFormat(cmd *cobra.Command, p *string) {
 	cmd.Flags().StringVarP(p, "output", "o", "table", "output format `table|wide|yaml|json|template=<Go template>`")
@@ -288,6 +293,6 @@ func SimpleProgress(message string, eta time.Duration) (func(), progress.Writer,
 	w.AppendTracker(t)
 
 	return func() {
-		time.Sleep(100 * time.Millisecond)
+		time.Sleep(250 * time.Millisecond)
 	}, w, t
 }
