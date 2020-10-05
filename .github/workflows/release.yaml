@@ -47,3 +47,25 @@ jobs:
           files: 'bin/github.com/netsoc/*'
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           release-tag: v${{ steps.vars.outputs.version }}
+
+      - name: Generate documentation
+        run: |
+          rm -rf docs/
+          mkdir docs/
+
+          bin/github.com/netsoc/cli-linux-amd64 docs -t markdown -o docs/
+          ln -sf netsoc.md docs/README.md
+
+      - name: Commit documentation
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+          git add docs/
+          git commit -m "Re-generate documentation"
+
+      - name: Push documentation
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: '${{ secrets.GITHUB_TOKEN }}'
+          tags: true
