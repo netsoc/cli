@@ -19,7 +19,7 @@ func NewCmdWebspace(f *util.CmdFactory) *cobra.Command {
 	// config
 	cmd.AddCommand(NewCmdInit(f), NewCmdDelete(f))
 	// state
-	cmd.AddCommand(NewCmdStatus(f), NewCmdStart(f))
+	cmd.AddCommand(NewCmdStatus(f), NewCmdStart(f), NewCmdReboot(f), NewCmdStop(f))
 	// console
 	cmd.AddCommand(NewCmdLog(f))
 

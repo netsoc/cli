@@ -12,25 +12,25 @@ import (
 	webspaced "github.com/netsoc/webspaced/client"
 )
 
-type startOptions struct {
+type shutdownOptions struct {
 	Config          func() (*config.Config, error)
 	WebspacedClient func() (*webspaced.APIClient, error)
 
 	User string
 }
 
-// NewCmdStart creates a new webspace start command
-func NewCmdStart(f *util.CmdFactory) *cobra.Command {
-	opts := startOptions{
+// NewCmdStop creates a new webspace shutdown command
+func NewCmdStop(f *util.CmdFactory) *cobra.Command {
+	opts := shutdownOptions{
 		Config:          f.Config,
 		WebspacedClient: f.WebspacedClient,
 	}
 	cmd := &cobra.Command{
-		Use:     "boot",
-		Aliases: []string{"start"},
-		Short:   "Boot webspace",
+		Use:     "shutdown",
+		Aliases: []string{"stop"},
+		Short:   "Shut down webspace",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return startRun(opts)
+			return shutdownRun(opts)
 		},
 	}
 
@@ -39,7 +39,7 @@ func NewCmdStart(f *util.CmdFactory) *cobra.Command {
 	return cmd
 }
 
-func startRun(opts startOptions) error {
+func shutdownRun(opts shutdownOptions) error {
 	c, err := opts.Config()
 	if err != nil {
 		return err
@@ -55,10 +55,10 @@ func startRun(opts startOptions) error {
 	}
 	ctx := context.WithValue(context.Background(), webspaced.ContextAccessToken, c.Token)
 
-	await, _, t := util.SimpleProgress("Starting webspace", 5*time.Second)
+	await, _, t := util.SimpleProgress("Shutting down webspace", 5*time.Second)
 	defer await()
 
-	_, err = client.StateApi.Start(ctx, opts.User)
+	_, err = client.StateApi.Shutdown(ctx, opts.User)
 	t.MarkAsDone()
 	if err != nil {
 		return util.APIError(err)
