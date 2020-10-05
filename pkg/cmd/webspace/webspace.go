@@ -14,7 +14,7 @@ func NewCmdWebspace(f *util.CmdFactory) *cobra.Command {
 		Short:   "Manage webspace",
 	}
 
-	cmd.AddCommand(NewCmdImages(f))
+	cmd.AddCommand(NewCmdImages(f), NewCmdInit(f), NewCmdDelete(f))
 
 	return cmd
 }

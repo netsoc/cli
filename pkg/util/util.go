@@ -16,6 +16,7 @@ import (
 	"github.com/Masterminds/semver/v3"
 	"github.com/dgrijalva/jwt-go/v4"
 	"github.com/google/go-github/v32/github"
+	"github.com/jedib0t/go-pretty/v6/progress"
 	"github.com/jedib0t/go-pretty/v6/table"
 	"github.com/mattn/go-isatty"
 	"github.com/netsoc/cli/version"
@@ -264,4 +265,29 @@ func CheckUpdate() (string, error) {
 	}
 
 	return "", nil
+}
+
+// SimpleProgress renders a simple progress
+func SimpleProgress(message string, eta time.Duration) (func(), progress.Writer, *progress.Tracker) {
+	w := progress.NewWriter()
+	w.SetAutoStop(true)
+	w.ShowPercentage(false)
+	w.ShowTime(true)
+	w.ShowTracker(false)
+	w.ShowValue(false)
+	w.SetTrackerPosition(progress.PositionRight)
+	go w.Render()
+
+	t := &progress.Tracker{
+		Message: message,
+		Total:   1,
+		Units:   progress.UnitsDefault,
+
+		ExpectedDuration: eta,
+	}
+	w.AppendTracker(t)
+
+	return func() {
+		time.Sleep(100 * time.Millisecond)
+	}, w, t
 }
