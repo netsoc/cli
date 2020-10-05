@@ -172,6 +172,8 @@ github.com/netsoc/iam/client v1.0.9 h1:hrOXe0cVYzsvIlkFNUsq98mE7lyZnS7wBnriiUAGA
 github.com/netsoc/iam/client v1.0.9/go.mod h1:CA6PtAeTRVAx6AXb+DAjav7d754hNWcwEVFij9Nzsxg=
 github.com/netsoc/webspaced/client v1.0.0 h1:FCiYbD4KuOzJ6i2Ieaxwgctp350fPUgG1DA1MCVVNJE=
 github.com/netsoc/webspaced/client v1.0.0/go.mod h1:GFCOmONSPqvqD2LoglRBFrqr0GdUbN/7huvbsyXMRkU=
+github.com/netsoc/webspaced/client v1.0.1 h1:bcwDEOGz1J7md0+UaW0kl3ck/fPvoippSmQb4N5Wtl8=
+github.com/netsoc/webspaced/client v1.0.1/go.mod h1:GFCOmONSPqvqD2LoglRBFrqr0GdUbN/7huvbsyXMRkU=
 github.com/oklog/ulid v1.3.1/go.mod h1:CirwcVhetQ6Lv90oh/F+FBtV6XMibvdAFo93nm5qn4U=
 github.com/pascaldekloe/goe v0.0.0-20180627143212-57f6aae5913c/go.mod h1:lzWF7FIEvWOWxwDKqyGYQf6ZUaNfKdP144TG7ZOy1lc=
 github.com/pelletier/go-toml v1.2.0 h1:T5zMGML61Wp+FlcbWjRDT7yAxhJNAiPPLOFECq181zc=
