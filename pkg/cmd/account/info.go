@@ -42,7 +42,7 @@ func NewCmdInfo(f *util.CmdFactory) *cobra.Command {
 	}
 
 	util.AddOptFormat(cmd, &opts.OutputFormat)
-	cmd.Flags().StringVarP(&opts.User, "user", "u", "self", "(admin only) user to get info about")
+	util.AddOptUser(cmd, &opts.User)
 
 	return cmd
 }

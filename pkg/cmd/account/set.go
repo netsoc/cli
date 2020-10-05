@@ -75,7 +75,7 @@ func NewCmdSet(f *util.CmdFactory) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVarP(&opts.User, "user", "u", "self", "(admin only) user to set property on")
+	util.AddOptUser(cmd, &opts.User)
 
 	return cmd
 }

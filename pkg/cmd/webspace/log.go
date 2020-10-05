@@ -33,7 +33,7 @@ func NewCmdLog(f *util.CmdFactory) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVarP(&opts.User, "user", "u", "self", "(admin only) user to get log for")
+	util.AddOptUser(cmd, &opts.User)
 
 	return cmd
 }

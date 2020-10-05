@@ -36,7 +36,7 @@ func NewCmdDelete(f *util.CmdFactory) *cobra.Command {
 	}
 
 	cmd.Flags().BoolVar(&opts.NoConfirm, "yes", false, "don't ask for confirmation")
-	cmd.Flags().StringVarP(&opts.User, "user", "u", "self", "(admin only) user to delete webspace for")
+	util.AddOptUser(cmd, &opts.User)
 
 	return cmd
 }

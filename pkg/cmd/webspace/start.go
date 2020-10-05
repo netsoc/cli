@@ -34,7 +34,7 @@ func NewCmdStart(f *util.CmdFactory) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVarP(&opts.User, "user", "u", "self", "(admin only) user to start webspace for")
+	util.AddOptUser(cmd, &opts.User)
 
 	return cmd
 }

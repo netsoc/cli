@@ -48,7 +48,7 @@ func NewCmdInit(f *util.CmdFactory) *cobra.Command {
 		},
 	}
 
-	cmd.Flags().StringVarP(&opts.User, "user", "u", "self", "(admin only) user to create webspace for")
+	util.AddOptUser(cmd, &opts.User)
 	cmd.Flags().BoolVar(&opts.NoPassword, "no-password", false, "don't set root password")
 	cmd.Flags().StringVarP(&opts.SSHKeyFile, "ssh-key", "k", "", "path to SSH public key")
 

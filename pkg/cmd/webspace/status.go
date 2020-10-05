@@ -43,7 +43,7 @@ func NewCmdStatus(f *util.CmdFactory) *cobra.Command {
 	}
 
 	cmd.Flags().StringVarP(&opts.OutputFormat, "output", "o", "text", "output format `text|yaml|json|template=<Go template>`")
-	cmd.Flags().StringVarP(&opts.User, "user", "u", "self", "(admin only) user to get state for")
+	util.AddOptUser(cmd, &opts.User)
 
 	return cmd
 }
