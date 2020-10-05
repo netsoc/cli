@@ -20,6 +20,7 @@ import (
 	"github.com/mattn/go-isatty"
 	"github.com/netsoc/cli/version"
 	iam "github.com/netsoc/iam/client"
+	webspaced "github.com/netsoc/webspaced/client"
 	"github.com/spf13/cobra"
 	"golang.org/x/crypto/ssh/terminal"
 	"gopkg.in/yaml.v2"
@@ -57,6 +58,14 @@ func APIError(err error) error {
 	if ok := errors.As(err, &iamGeneric); ok {
 		if iamError, ok := iamGeneric.Model().(iam.Error); ok {
 			return errors.New(iamError.Message)
+		}
+		return err
+	}
+
+	var wsdGeneric webspaced.GenericOpenAPIError
+	if ok := errors.As(err, &wsdGeneric); ok {
+		if wsdError, ok := wsdGeneric.Model().(webspaced.Error); ok {
+			return errors.New(wsdError.Message)
 		}
 		return err
 	}

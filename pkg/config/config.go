@@ -23,6 +23,7 @@ func SetDefaults() {
 	viper.SetDefault("allow_insecure", false)
 
 	viper.SetDefault("urls.iam", "https://iam.netsoc.ie/v1")
+	viper.SetDefault("urls.webspaced", "https://webspaced.netsoc.ie/v1")
 }
 
 // Config represents the Netsoc CLI config
@@ -32,7 +33,8 @@ type Config struct {
 	AllowInsecure bool `mapstructure:"allow_insecure"`
 
 	URLs struct {
-		IAM string
+		IAM       string
+		Webspaced string
 	}
 
 	LastUpdateCheck time.Time `mapstructure:"last_update_check"`

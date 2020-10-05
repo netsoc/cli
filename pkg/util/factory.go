@@ -14,13 +14,15 @@ import (
 
 	"github.com/netsoc/cli/pkg/config"
 	iam "github.com/netsoc/iam/client"
+	webspaced "github.com/netsoc/webspaced/client"
 )
 
 // CmdFactory provides methods to obtain commonly used structures
 type CmdFactory struct {
-	Config    func() (*config.Config, error)
-	Claims    func() (*UserClaims, error)
-	IAMClient func() (*iam.APIClient, error)
+	Config          func() (*config.Config, error)
+	Claims          func() (*UserClaims, error)
+	IAMClient       func() (*iam.APIClient, error)
+	WebspacedClient func() (*webspaced.APIClient, error)
 }
 
 // NewDefaultCmdFactory creates a new command factory
@@ -101,6 +103,26 @@ func NewDefaultCmdFactory(configFlag, debugFlag *pflag.Flag) *CmdFactory {
 			}
 
 			return iam.NewAPIClient(cfg), nil
+		},
+		WebspacedClient: func() (*webspaced.APIClient, error) {
+			c, err := configFunc()
+			if err != nil {
+				return nil, fmt.Errorf("failed to load config: %w", err)
+			}
+
+			cfg := webspaced.NewConfiguration()
+			cfg.BasePath = c.URLs.Webspaced
+			if c.AllowInsecure {
+				cfg.HTTPClient = &http.Client{
+					Transport: &http.Transport{
+						TLSClientConfig: &tls.Config{
+							InsecureSkipVerify: true,
+						},
+					},
+				}
+			}
+
+			return webspaced.NewAPIClient(cfg), nil
 		},
 	}
 }

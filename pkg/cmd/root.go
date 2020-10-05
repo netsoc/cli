@@ -11,6 +11,7 @@ import (
 	"github.com/spf13/viper"
 
 	"github.com/netsoc/cli/pkg/cmd/account"
+	"github.com/netsoc/cli/pkg/cmd/webspace"
 	"github.com/netsoc/cli/pkg/util"
 )
 
@@ -35,6 +36,7 @@ func NewCmdRoot() *cobra.Command {
 	f := util.NewDefaultCmdFactory(cmd.PersistentFlags().Lookup("config"), cmd.PersistentFlags().Lookup("debug"))
 
 	cmd.AddCommand(account.NewCmdAccount(f))
+	cmd.AddCommand(webspace.NewCmdWebspace(f))
 	cmd.AddCommand(NewCmdCompletion())
 	cmd.AddCommand(NewCmdVersion(f))
 

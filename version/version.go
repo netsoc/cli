@@ -10,6 +10,8 @@ var (
 	Version = ""
 	// IAM is the version of the IAM API client
 	IAM = ""
+	// Webspaced is the version of the webspaced API client
+	Webspaced = ""
 )
 
 func init() {
@@ -26,6 +28,8 @@ func init() {
 		switch mod.Path {
 		case "github.com/netsoc/iam/client":
 			IAM = mod.Version
+		case "github.com/netsoc/webspaced/client":
+			Webspaced = mod.Version
 		}
 	}
 }

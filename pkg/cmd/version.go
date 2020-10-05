@@ -27,5 +27,6 @@ func versionRun(f *util.CmdFactory) error {
 
 	log.Printf("CLI version: %v", version.Version)
 	log.Printf("IAM API client version: %v", version.IAM)
+	log.Printf("webspaced API client version: %v", version.Webspaced)
 	return nil
 }
