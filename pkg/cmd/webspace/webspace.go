@@ -17,7 +17,7 @@ func NewCmdWebspace(f *util.CmdFactory) *cobra.Command {
 	// images
 	cmd.AddCommand(NewCmdImages(f))
 	// config
-	cmd.AddCommand(NewCmdInit(f), NewCmdDelete(f))
+	cmd.AddCommand(NewCmdInit(f), NewCmdDelete(f), NewCmdConfig(f))
 	// state
 	cmd.AddCommand(NewCmdStatus(f), NewCmdStart(f), NewCmdReboot(f), NewCmdStop(f))
 	// console

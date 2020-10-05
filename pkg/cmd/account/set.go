@@ -48,10 +48,9 @@ func NewCmdSet(f *util.CmdFactory) *cobra.Command {
 	causesRoll.AppendItems([]interface{}{"password", "email", "isadmin"})
 
 	cmd := &cobra.Command{
-		Use:     "set <property> <value>",
-		Aliases: []string{"get"},
-		Short:   "Set user property",
-		Args:    cobra.ExactArgs(2),
+		Use:   "set <property> <value>",
+		Short: "Set user property",
+		Args:  cobra.ExactArgs(2),
 		Long: heredoc.Docf(`
 			Set user property.
 			If logged in with an admin account, the -u flag can be used to
