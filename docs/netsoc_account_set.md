@@ -35,7 +35,7 @@ netsoc account set <property> <value> [flags]
 
 ```
   -h, --help          help for set
-  -u, --user string   (admin only) user to set property on (default "self")
+  -u, --user string   (admin only) user to perform action as (default "self")
 ```
 
 ### Options inherited from parent commands

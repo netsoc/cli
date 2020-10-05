@@ -19,7 +19,7 @@ netsoc account info [flags]
 ```
   -h, --help                                                 help for info
   -o, --output table|wide|yaml|json|template=<Go template>   output format table|wide|yaml|json|template=<Go template> (default "table")
-  -u, --user string                                          (admin only) user to get info about (default "self")
+  -u, --user string                                          (admin only) user to perform action as (default "self")
 ```
 
 ### Options inherited from parent commands
