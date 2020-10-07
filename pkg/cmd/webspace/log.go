@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
+	"log"
 
 	"github.com/spf13/cobra"
 
@@ -16,7 +17,8 @@ type logOptions struct {
 	Config          func() (*config.Config, error)
 	WebspacedClient func() (*webspaced.APIClient, error)
 
-	User string
+	User    string
+	IsClear bool
 }
 
 // NewCmdLog creates a new webspace log command
@@ -34,6 +36,7 @@ func NewCmdLog(f *util.CmdFactory) *cobra.Command {
 	}
 
 	util.AddOptUser(cmd, &opts.User)
+	cmd.Flags().BoolVarP(&opts.IsClear, "clear", "c", false, "clear the console log instead of viewing it")
 
 	return cmd
 }
@@ -53,6 +56,15 @@ func logRun(opts logOptions) error {
 		return err
 	}
 	ctx := context.WithValue(context.Background(), webspaced.ContextAccessToken, c.Token)
+
+	if opts.IsClear {
+		if _, err := client.ConsoleApi.ClearLog(ctx, opts.User); err != nil {
+			return util.APIError(err)
+		}
+
+		log.Println("Cleared successfully")
+		return nil
+	}
 
 	log, _, err := client.ConsoleApi.GetLog(ctx, opts.User)
 	if err != nil {
