@@ -96,14 +96,15 @@ func initRun(opts initOptions) error {
 	}
 
 	await, _, t := util.SimpleProgress("Initializing webspace", 10*time.Second)
-	defer await()
 
 	ws, _, err := client.ConfigApi.Create(ctx, opts.User, req)
 	t.MarkAsDone()
 	if err != nil {
+		await()
 		return util.APIError(err)
 	}
 
+	await()
 	for e, i := range ws.Ports {
 		if i == 22 {
 			log.Printf("Webspace accessible over SSH on port %v", e)
