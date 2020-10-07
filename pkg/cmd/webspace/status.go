@@ -86,6 +86,7 @@ func printState(state webspaced.State, outputType string) error {
 		}
 
 		if state.Running {
+			fmt.Printf("Uptime: %v\n", time.Duration(state.Uptime*float64(time.Second.Nanoseconds())))
 			fmt.Printf("CPU time: %v\n", time.Duration(state.Usage.Cpu))
 			fmt.Printf("Memory usage: %v\n", humanize.IBytes(uint64(state.Usage.Memory)))
 			fmt.Printf("Running processes: %v\n", state.Usage.Processes)
