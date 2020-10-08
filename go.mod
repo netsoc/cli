@@ -9,6 +9,7 @@ require (
 	github.com/dustin/go-humanize v1.0.0
 	github.com/githubnemo/CompileDaemon v1.2.1
 	github.com/google/go-github/v32 v32.1.0
+	github.com/gorilla/websocket v1.4.2
 	github.com/jedib0t/go-pretty/v6 v6.0.5
 	github.com/mattn/go-isatty v0.0.12
 	github.com/mitchellh/go-homedir v1.1.0

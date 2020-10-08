@@ -25,7 +25,7 @@ func NewCmdWebspace(f *util.CmdFactory) *cobra.Command {
 	// ports
 	cmd.AddCommand(NewCmdPorts(f))
 	// console
-	cmd.AddCommand(NewCmdLog(f))
+	cmd.AddCommand(NewCmdLog(f), NewCmdConsole(f))
 
 	return cmd
 }

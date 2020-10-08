@@ -305,3 +305,54 @@ func SimpleProgress(message string, eta time.Duration) (func(), progress.Writer,
 		time.Sleep(250 * time.Millisecond)
 	}, w, t
 }
+
+// EscapeReader transparently reads an escape sequence (^]) from an io.Reader, assumes a TTY in raw mode (one byte at
+// a time reads)
+type EscapeReader struct {
+	r io.Reader
+
+	foundEscape bool
+	escapeChan  chan bool
+}
+
+// NewEscapeReader creates a new escape reading proxy
+func NewEscapeReader(r io.Reader, c chan bool) *EscapeReader {
+	return &EscapeReader{
+		r: r,
+
+		escapeChan: c,
+	}
+}
+
+func (e *EscapeReader) Read(p []byte) (int, error) {
+	n, err := e.r.Read(p[:1])
+	if err != nil {
+		return n, err
+	}
+
+	v := p[0]
+	if e.foundEscape {
+		e.foundEscape = false
+		if v == byte('q') {
+			// Received escape
+			e.escapeChan <- true
+			return 0, nil
+		}
+
+		// Wasn't an escape, forward first char too
+		p[0] = '\x1d'
+		p[1] = byte(v)
+		return 2, nil
+	} else if v == 0x1d {
+		e.foundEscape = true
+		return 0, nil
+	}
+
+	return n, nil
+}
+
+// ConsoleSize represents the dimensions of the terminal
+type ConsoleSize struct {
+	Width  int `json:"width"`
+	Height int `json:"height"`
+}
