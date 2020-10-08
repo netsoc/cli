@@ -5,6 +5,7 @@ go 1.15
 require (
 	github.com/MakeNowJust/heredoc v1.0.0
 	github.com/Masterminds/semver/v3 v3.1.0
+	github.com/containerd/console v1.0.1
 	github.com/dgrijalva/jwt-go/v4 v4.0.0-preview1
 	github.com/dustin/go-humanize v1.0.0
 	github.com/githubnemo/CompileDaemon v1.2.1

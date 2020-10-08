@@ -8,7 +8,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	"golang.org/x/crypto/ssh/terminal"
+	"github.com/containerd/console"
 )
 
 // ResizeListener listens for changes in console size
@@ -16,24 +16,19 @@ func ResizeListener(sizeChan chan ConsoleSize, stop chan struct{}) {
 	winchChan := make(chan os.Signal, 1)
 	signal.Notify(winchChan, syscall.SIGWINCH)
 
-	stdin := int(os.Stdin.Fd())
+	tty := console.Current()
 	for {
 		select {
 		case <-winchChan:
-			w, h, err := terminal.GetSize(stdin)
+			s, err := tty.Size()
 			if err != nil {
 				log.Printf("Failed to get terminal size: %v", err)
 				return
 			}
 
-			sizeChan <- ConsoleSize{w, h}
+			sizeChan <- ConsoleSize{int(s.Width), int(s.Height)}
 		case <-stop:
 			return
 		}
 	}
-}
-
-// GetTerminalSize returns the dimensions of a TTY (lines x cols)
-func GetTerminalSize(fd int) (int, int, error) {
-	return terminal.GetSize(fd)
 }

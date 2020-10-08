@@ -7,8 +7,8 @@ import (
 	"log"
 	"os"
 
+	"github.com/containerd/console"
 	"github.com/spf13/cobra"
-	"golang.org/x/crypto/ssh/terminal"
 
 	"github.com/netsoc/cli/pkg/config"
 	"github.com/netsoc/cli/pkg/util"
@@ -58,23 +58,22 @@ func consoleRun(opts consoleOptions) error {
 		return fmt.Errorf("failed to open websocket connection: %w", err)
 	}
 
-	stdin := int(os.Stdin.Fd())
+	tty := console.Current()
 
-	w, h, err := util.GetTerminalSize(stdin)
+	s, err := tty.Size()
 	if err != nil {
 		return fmt.Errorf("failed to get terminal size: %w", err)
 	}
-	if err := conn.WriteJSON(util.ConsoleSize{Width: w, Height: h}); err != nil {
+	if err := conn.WriteJSON(util.ConsoleSize{Width: int(s.Width), Height: int(s.Height)}); err != nil {
 		conn.Close()
 		return fmt.Errorf("failed to send initial terminal size: %w", err)
 	}
 
-	ttyState, err := terminal.MakeRaw(stdin)
-	if err != nil {
+	if err := tty.SetRaw(); err != nil {
 		conn.Close()
-		return fmt.Errorf("failed to configure terminal: %w", err)
+		return fmt.Errorf("failed to put terminal in raw mode: %w", err)
 	}
-	defer terminal.Restore(stdin, ttyState)
+	defer tty.Reset()
 
 	rw := util.NewWebsocketIO(conn, func(s string, _ *util.WebsocketIO) {
 		util.Debugf("Received websocket text message: %v", s)
