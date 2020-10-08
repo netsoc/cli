@@ -60,7 +60,7 @@ func consoleRun(opts consoleOptions) error {
 
 	stdin := int(os.Stdin.Fd())
 
-	w, h, err := terminal.GetSize(stdin)
+	w, h, err := util.GetTerminalSize(stdin)
 	if err != nil {
 		return fmt.Errorf("failed to get terminal size: %w", err)
 	}

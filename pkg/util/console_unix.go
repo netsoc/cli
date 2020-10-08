@@ -32,3 +32,8 @@ func ResizeListener(sizeChan chan ConsoleSize, stop chan struct{}) {
 		}
 	}
 }
+
+// GetTerminalSize returns the dimensions of a TTY (lines x cols)
+func GetTerminalSize(fd int) (int, int, error) {
+	return terminal.GetSize(fd)
+}
