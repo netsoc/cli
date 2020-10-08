@@ -13,6 +13,8 @@ _`netsoc` allows you to manage your Netsoc account and webspace from the command
 3. Run `path/to/download/cli-<platform>` to access the CLI!
   (On Windows you might need `.\Downloads\cli-windows-4.0-amd64.exe`)
 
+If you're on Arch Linux, there's an [AUR package](https://aur.archlinux.org/packages/netsoc/).
+
 ## Docs
 
 See [`docs/`](docs/) for the command manual.
