@@ -1,20 +1,19 @@
-## netsoc webspace log
+## netsoc webspace console
 
-Get console log
+Attach to console
 
 ### Synopsis
 
-Get console log
+Attach to console
 
 ```
-netsoc webspace log [flags]
+netsoc webspace console [flags]
 ```
 
 ### Options
 
 ```
-  -c, --clear         clear the console log instead of viewing it
-  -h, --help          help for log
+  -h, --help          help for console
   -u, --user string   (admin only) user to perform action as (default "self")
 ```
 
