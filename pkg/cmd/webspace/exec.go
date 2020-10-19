@@ -321,7 +321,8 @@ func runLogin(opts loginOptions) error {
 		User:         opts.User,
 		OutputFormat: "interactive",
 		Request: webspaced.ExecInteractiveRequest{
-			Command: []string{shell},
+			Command:     []string{shell},
+			Environment: map[string]string{"TERM": util.GetTERM()},
 		},
 	})
 }
