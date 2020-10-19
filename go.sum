@@ -173,8 +173,8 @@ github.com/modern-go/reflect2 v1.0.1/go.mod h1:bx2lNnkwVCuqBIxFjflWJWanXIb3Rllmb
 github.com/mwitkow/go-conntrack v0.0.0-20161129095857-cc309e4a2223/go.mod h1:qRWi+5nqEBWmkhHvq77mSJWrCKwh8bxhgT7d/eI7P4U=
 github.com/netsoc/iam/client v1.0.9 h1:hrOXe0cVYzsvIlkFNUsq98mE7lyZnS7wBnriiUAGAzc=
 github.com/netsoc/iam/client v1.0.9/go.mod h1:CA6PtAeTRVAx6AXb+DAjav7d754hNWcwEVFij9Nzsxg=
-github.com/netsoc/webspaced/client v1.1.0 h1:WmUS4C3ZirHeOvDbLoNIZsAziiR4NnAzCwDZXXWuxXU=
-github.com/netsoc/webspaced/client v1.1.0/go.mod h1:GFCOmONSPqvqD2LoglRBFrqr0GdUbN/7huvbsyXMRkU=
+github.com/netsoc/webspaced/client v1.1.2 h1:j+Sux/iqecUV+Ee/325o28dazWL0a114J3KY3loXkXY=
+github.com/netsoc/webspaced/client v1.1.2/go.mod h1:GFCOmONSPqvqD2LoglRBFrqr0GdUbN/7huvbsyXMRkU=
 github.com/oklog/ulid v1.3.1/go.mod h1:CirwcVhetQ6Lv90oh/F+FBtV6XMibvdAFo93nm5qn4U=
 github.com/pascaldekloe/goe v0.0.0-20180627143212-57f6aae5913c/go.mod h1:lzWF7FIEvWOWxwDKqyGYQf6ZUaNfKdP144TG7ZOy1lc=
 github.com/pelletier/go-toml v1.2.0 h1:T5zMGML61Wp+FlcbWjRDT7yAxhJNAiPPLOFECq181zc=

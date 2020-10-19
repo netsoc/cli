@@ -32,3 +32,9 @@ func ResizeListener(sizeChan chan ConsoleSize, stop chan struct{}) {
 		}
 	}
 }
+
+// GetTERM gets the value of the TERM environment variable
+func GetTERM() string {
+	t, _ := os.LookupEnv("TERM")
+	return t
+}

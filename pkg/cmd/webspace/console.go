@@ -8,16 +8,15 @@ import (
 	"os"
 
 	"github.com/containerd/console"
+	"github.com/gorilla/websocket"
 	"github.com/spf13/cobra"
 
 	"github.com/netsoc/cli/pkg/config"
 	"github.com/netsoc/cli/pkg/util"
-	webspaced "github.com/netsoc/webspaced/client"
 )
 
 type consoleOptions struct {
-	Config          func() (*config.Config, error)
-	WebspacedClient func() (*webspaced.APIClient, error)
+	Config func() (*config.Config, error)
 
 	User string
 }
@@ -25,8 +24,7 @@ type consoleOptions struct {
 // NewCmdConsole creates a new webspace console command
 func NewCmdConsole(f *util.CmdFactory) *cobra.Command {
 	opts := consoleOptions{
-		Config:          f.Config,
-		WebspacedClient: f.WebspacedClient,
+		Config: f.Config,
 	}
 	cmd := &cobra.Command{
 		Use:   "console",
@@ -118,6 +116,12 @@ func consoleRun(opts consoleOptions) error {
 		fmt.Print("\r\n")
 		return nil
 	case err := <-errChan:
+		var ce *websocket.CloseError
+		if errors.As(err, &ce) && ce.Code == websocket.CloseNormalClosure {
+			fmt.Print("\r\n")
+			return nil
+		}
+
 		return err
 	}
 }

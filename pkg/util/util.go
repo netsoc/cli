@@ -10,6 +10,7 @@ import (
 	"log"
 	"os"
 	"strings"
+	"syscall"
 	"text/template"
 	"time"
 
@@ -43,6 +44,9 @@ const (
 	// UpdateRepo is the repository to check for updates on
 	UpdateRepo = "netsoc/cli"
 )
+
+// ExitCode is the code the process should exit with (without an error)
+var ExitCode int
 
 // Debugf prints log messages only if debugging is enabled
 func Debugf(format string, v ...interface{}) {
@@ -355,4 +359,14 @@ func (e *EscapeReader) Read(p []byte) (int, error) {
 type ConsoleSize struct {
 	Width  int `json:"width"`
 	Height int `json:"height"`
+}
+
+// SignalValue converts a signal to its integer value
+func SignalValue(sig os.Signal) int {
+	syscallSignal, ok := sig.(syscall.Signal)
+	if ok {
+		return int(syscallSignal)
+	}
+
+	return int(syscall.SIGTERM)
 }
