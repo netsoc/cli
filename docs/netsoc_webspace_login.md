@@ -1,19 +1,19 @@
-## netsoc webspace boot
+## netsoc webspace login
 
-Boot webspace
+Get shell in webspace
 
 ### Synopsis
 
-Boot webspace
+Get shell in webspace
 
 ```
-netsoc webspace boot [flags]
+netsoc webspace login [flags]
 ```
 
 ### Options
 
 ```
-  -h, --help          help for boot
+  -h, --help          help for login
   -u, --user string   (admin only) user to perform action as (default "self")
 ```
 
