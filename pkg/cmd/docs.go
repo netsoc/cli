@@ -13,7 +13,7 @@ import (
 
 const (
 	sourceURL = "https://github.com/netsoc/cli"
-	docsURL   = "https://github.com/netsoc/cli/tree/master/docs"
+	docsURL   = "https://docs.netsoc.ie/cli/"
 )
 
 // NewCmdDocs creates a new docs command

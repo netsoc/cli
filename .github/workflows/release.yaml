@@ -48,20 +48,21 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           release-tag: v${{ steps.vars.outputs.version }}
 
-      - name: Generate documentation
+      - name: Generate reference documentation
         run: |
-          rm -rf docs/
-          mkdir docs/
+          rm -rf docs/reference/
+          mkdir -p docs/reference/
 
-          bin/github.com/netsoc/cli-linux-amd64 docs -t markdown -o docs/
-          ln -sf netsoc.md docs/README.md
+          bin/github.com/netsoc/cli-linux-amd64 docs -t markdown -o docs/reference/
+          pip3 install pyyaml
+          ./gen_mkdocs_pages.py docs/reference/ > docs/reference/.pages
 
-      - name: Commit documentation
+      - name: Commit reference docs
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
 
-          git add docs/
+          git add docs/reference/
           git commit -m "Re-generate documentation"
 
       - name: Push documentation
