@@ -56,16 +56,25 @@ jobs:
           bin/github.com/netsoc/cli-linux-amd64 docs -t markdown -o docs/reference/
           ./gen_mkdocs_pages.py docs/reference/ > docs/reference/.pages
 
-      - name: Commit reference docs
+      - id: stage_docs
+        name: Stage reference docs changes
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
 
           git add docs/reference/
-          git commit -m "Re-generate documentation"
+          git diff-index --quiet HEAD --
+
+          echo "::set-output name=changes::$?"
+
+      - name: Commit reference docs changes
+        if: ${{ steps.stage_docs.outputs.changes == '1' }}
+        run: git commit -m "Re-generate reference documentation"
 
       - name: Push documentation
+        if: ${{ steps.stage_docs.outputs.changes == '1' }}
         uses: ad-m/github-push-action@master
         with:
-          github_token: '${{ secrets.GITHUB_TOKEN }}'
+          # Use a PAT because we need to trigger a workflow run
+          github_token: '${{ secrets.CI_PAT }}'
           tags: true
