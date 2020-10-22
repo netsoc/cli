@@ -11,6 +11,10 @@ import (
 	"github.com/containerd/console"
 )
 
+// SignalForwardingSet is the set of signals that should can be forwarded
+var SignalForwardingSet = []os.Signal{syscall.SIGINT, syscall.SIGTERM, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTSTP,
+	syscall.SIGTTIN, syscall.SIGTTOU, syscall.SIGUSR1, syscall.SIGUSR2, syscall.SIGCONT}
+
 // ResizeListener listens for changes in console size
 func ResizeListener(sizeChan chan ConsoleSize, stop chan struct{}) {
 	winchChan := make(chan os.Signal, 1)

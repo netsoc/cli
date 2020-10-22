@@ -11,7 +11,6 @@ import (
 	"os/signal"
 	"strconv"
 	"strings"
-	"syscall"
 	"text/template"
 
 	"github.com/MakeNowJust/heredoc"
@@ -195,8 +194,7 @@ func execInteractive(opts execOptions) error {
 
 	defer close(stopControl)
 	go util.ResizeListener(resizeChan, stopControl)
-	signal.Notify(signalChan, os.Interrupt, syscall.SIGTERM, syscall.SIGHUP, syscall.SIGQUIT, syscall.SIGTSTP,
-		syscall.SIGTTIN, syscall.SIGTTOU, syscall.SIGUSR1, syscall.SIGUSR2, syscall.SIGCONT)
+	signal.Notify(signalChan, util.SignalForwardingSet...)
 	go func() {
 		for {
 			select {
