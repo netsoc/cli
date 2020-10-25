@@ -37,7 +37,7 @@ func NewCmdSet(f *util.CmdFactory) *cobra.Command {
 
 	settable := list.NewWriter()
 	settable.SetStyle(listStyle)
-	settable.AppendItems([]interface{}{"username", "email", "password", "firstname", "lastname"})
+	settable.AppendItems([]interface{}{"username", "email", "password", "firstname", "lastname", "sshkey"})
 
 	admin := list.NewWriter()
 	admin.SetStyle(listStyle)
