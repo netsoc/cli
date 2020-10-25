@@ -62,17 +62,18 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
 
+          changed="no"
           git add docs/reference/
-          git diff-index --quiet HEAD --
+          git diff-index --quiet HEAD -- || changed="yes"
 
-          echo "::set-output name=changes::$?"
+          echo "::set-output name=changed::$changed"
 
       - name: Commit reference docs changes
-        if: ${{ steps.stage_docs.outputs.changes == '1' }}
+        if: ${{ steps.stage_docs.outputs.changed == 'yes' }}
         run: git commit -m "Re-generate reference documentation"
 
       - name: Push documentation
-        if: ${{ steps.stage_docs.outputs.changes == '1' }}
+        if: ${{ steps.stage_docs.outputs.changed == 'yes' }}
         uses: ad-m/github-push-action@master
         with:
           # Use a PAT because we need to trigger a workflow run
