@@ -9,6 +9,7 @@ import (
 	"io"
 	"log"
 	"os"
+	"sort"
 	"strings"
 	"syscall"
 	"text/template"
@@ -156,10 +157,25 @@ type UserClaims struct {
 	Version uint `json:"version"`
 }
 
+type usersList []iam.User
+
+func (l usersList) Len() int {
+	return len(l)
+}
+func (l usersList) Less(i, j int) bool {
+	return l[i].Id < l[j].Id
+}
+func (l usersList) Swap(i, j int) {
+	l[i], l[j] = l[j], l[i]
+}
+
 // PrintUsers renders a list of users (with various output options)
 func PrintUsers(users []iam.User, outputType string, single bool) error {
+	sUsers := usersList(users)
+	sort.Sort(sUsers)
+
 	var data interface{}
-	data = users
+	data = sUsers
 	if single && len(users) == 1 {
 		data = users[0]
 	}
