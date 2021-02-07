@@ -4,7 +4,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"io/ioutil"
 	"log"
 	"time"
 
@@ -23,7 +22,7 @@ type initOptions struct {
 	User       string
 	Image      string
 	NoPassword bool
-	SSHKeyFile string
+	InstallSSH bool
 }
 
 // NewCmdInit creates a new webspace init command
@@ -38,8 +37,9 @@ func NewCmdInit(f *util.CmdFactory) *cobra.Command {
 		Short:   "Initialize webspace",
 		Long: heredoc.Doc(`
 			Initialize webspace using a provided image alias or fingerprint. By
-			default sets root password by reading from stdin. Can also enable
-			SSH port forwarding by passing an SSH key file.
+			default sets root password by reading from stdin. Can also install
+			an SSH server (providing an SSH key has been configured on the
+			user's account), along with a port forward.
 		`),
 		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -50,7 +50,7 @@ func NewCmdInit(f *util.CmdFactory) *cobra.Command {
 
 	util.AddOptUser(cmd, &opts.User)
 	cmd.Flags().BoolVar(&opts.NoPassword, "no-password", false, "don't set root password")
-	cmd.Flags().StringVarP(&opts.SSHKeyFile, "ssh-key", "k", "", "path to SSH public key")
+	cmd.Flags().BoolVarP(&opts.InstallSSH, "ssh", "s", false, "install SSH server")
 
 	return cmd
 }
@@ -79,20 +79,10 @@ func initRun(opts initOptions) error {
 		}
 	}
 
-	var sshKey string
-	if opts.SSHKeyFile != "" {
-		data, err := ioutil.ReadFile(opts.SSHKeyFile)
-		if err != nil {
-			return fmt.Errorf("failed to read SSH public key file: %w", err)
-		}
-
-		sshKey = string(data)
-	}
-
 	req := webspaced.InitRequest{
 		Image:    opts.Image,
 		Password: p,
-		SshKey:   sshKey,
+		Ssh:      opts.InstallSSH,
 	}
 
 	await, _, t := util.SimpleProgress("Initializing webspace", 10*time.Second)
