@@ -210,12 +210,12 @@ func PrintUsers(users []iam.User, outputType string, single bool) error {
 
 		for _, u := range users {
 			admin := "no"
-			if u.IsAdmin {
+			if u.IsAdmin != nil && *u.IsAdmin {
 				admin = "yes"
 			}
 
 			verified := "no"
-			if u.Verified {
+			if u.Verified != nil && *u.Verified {
 				verified = "yes"
 			}
 
