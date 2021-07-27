@@ -9,6 +9,9 @@ jobs:
   release:
     runs-on: ubuntu-latest
 
+    env:
+      RELEASE_NAME: cli
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -26,7 +29,7 @@ jobs:
       - name: Cross compile with xgo
         uses: crazy-max/ghaction-xgo@v1
         with:
-          go_version: 1.15.x
+          go_version: 1.16.x
           pkg: cmd/netsoc
           dest: bin
           ldflags: '-X github.com/netsoc/cli/version.Version=v${{ steps.vars.outputs.version }}'
@@ -38,7 +41,7 @@ jobs:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
         with:
           tag_name: ${{ github.ref }}
-          release_name: Release ${{ steps.vars.outputs.version }}
+          release_name: ${{ env.RELEASE_NAME }} ${{ steps.vars.outputs.version }}
           body_path: release.md
 
       - name: Upload binaries to release
